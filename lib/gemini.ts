@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 // Get a free key at https://aistudio.google.com/app/apikey
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
-export const GEMINI_MODEL = "gemini-2.5-flash";
+export const GEMINI_MODEL = "gemini-3.5-flash";
 
 /**
  * Calls Gemini with a system + user prompt and asks it to return raw JSON,
