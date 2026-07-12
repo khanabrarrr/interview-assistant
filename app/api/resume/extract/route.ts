@@ -56,6 +56,8 @@ export async function POST(req: NextRequest) {
 // Firefox uses) rather than the unmaintained pdf-parse package, which fails
 // on many modern PDFs due to an outdated bundled parser.
 async function extractPdfText(buffer: Buffer): Promise<string> {
+  // Legacy build works without DOM/worker APIs, which is what a Node
+  // serverless function needs.
   const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
 
   const loadingTask = pdfjsLib.getDocument({
