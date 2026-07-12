@@ -20,7 +20,14 @@ export async function generateJSON(systemPrompt: string, userContent: string) {
     },
   });
 
-  const result = await model.generateContent(userContent);
-  const raw = result.response.text();
-  return JSON.parse(raw);
+  try {
+    const result = await model.generateContent(userContent);
+    const raw = result.response.text();
+    return JSON.parse(raw);
+  } catch (err) {
+    // Log the real Gemini error server-side (visible in Vercel's Logs tab)
+    // instead of letting it surface only as a generic network failure.
+    console.error("Gemini generateJSON failed:", err);
+    throw err;
+  }
 }
