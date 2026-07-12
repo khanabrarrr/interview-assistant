@@ -7,9 +7,9 @@ export default function AboutPage() {
     <>
       <Navbar />
       <main className="mx-auto max-w-3xl px-6 py-20">
-        <h1 className="text-3xl font-extrabold">About PlacementAI</h1>
+        <h1 className="text-3xl font-extrabold">About AceInterview</h1>
         <p className="mt-4 text-text-secondary">
-          PlacementAI was built for one reason: placement season is stressful, and
+          AceInterview was built for one reason: placement season is stressful, and
           most prep resources are generic. We wanted something that reads your actual
           resume, matches it to real job descriptions, and runs interview practice
           that adapts to how you answer — not a static bank of questions.

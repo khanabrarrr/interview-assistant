@@ -1,5 +1,5 @@
 {
-  "name": "ai-interview-placement-assistant",
+  "name": "aceinterview",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "framer-motion": "11.3.19",
     "@supabase/supabase-js": "2.45.0",
     "@supabase/auth-helpers-nextjs": "0.10.0",
-    "openai": "4.55.4",
+    "@google/generative-ai": "0.21.0",
     "lucide-react": "0.417.0",
     "react-hot-toast": "2.4.1",
     "pdf-parse": "1.1.1",

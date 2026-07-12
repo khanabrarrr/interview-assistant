@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai, MODEL } from "@/lib/openai";
+import { generateJSON } from "@/lib/gemini";
 
 // Expects JSON body:
 // {
@@ -39,17 +39,7 @@ Set "feedback" to null if this is the very first question of the interview (no l
 
     const userContent = `Interview history so far:\n${historyText || "(none yet — this is the first question)"}\n\nMost recent candidate answer to evaluate (if any): ${lastAnswer || "(none)"}`;
 
-    const completion = await openai.chat.completions.create({
-      model: MODEL,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userContent },
-      ],
-    });
-
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    const result = JSON.parse(raw);
+    const result = await generateJSON(systemPrompt, userContent);
 
     return NextResponse.json(result);
   } catch (err) {

@@ -10,7 +10,6 @@ import {
   Sparkles,
   TrendingUp,
   Map,
-  Check,
 } from "lucide-react";
 
 const features = [
@@ -68,24 +67,6 @@ const testimonials = [
     name: "Priya S.",
     role: "MBA graduate",
     quote: "Having a clear daily roadmap made a chaotic placement season feel manageable.",
-  },
-];
-
-const plans = [
-  {
-    name: "Free",
-    price: "₹0",
-    period: "forever",
-    features: ["3 resume analyses / month", "5 mock interview questions / day", "Basic roadmap", "Community support"],
-    cta: "Start Free",
-  },
-  {
-    name: "Premium",
-    price: "₹499",
-    period: "/ month",
-    features: ["Unlimited resume analyses", "Unlimited mock interviews", "Full placement roadmap", "Priority AI feedback", "Progress analytics"],
-    cta: "Go Premium",
-    highlight: true,
   },
 ];
 
@@ -166,7 +147,7 @@ export default function LandingPage() {
           <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((s, i) => (
               <div key={s.title} className="relative">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-sm font-bold text-black">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-accent text-sm font-bold text-white">
                   {i + 1}
                 </div>
                 <h3 className="font-semibold">{s.title}</h3>
@@ -194,44 +175,6 @@ export default function LandingPage() {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="pricing" className="bg-bg-secondary px-6 py-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl font-extrabold sm:text-4xl">Simple pricing</h2>
-          <p className="mt-4 text-text-secondary">Start free. Upgrade when you need more.</p>
-        </div>
-        <div className="mx-auto mt-14 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
-          {plans.map((p) => (
-            <Card
-              key={p.name}
-              className={p.highlight ? "border-accent/50 ring-1 ring-accent/30" : ""}
-            >
-              <h3 className="text-lg font-semibold">{p.name}</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-3xl font-extrabold">{p.price}</span>
-                <span className="text-sm text-text-secondary">{p.period}</span>
-              </div>
-              <ul className="mt-6 space-y-3">
-                {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
-                    <Check size={16} className="mt-0.5 shrink-0 text-accent" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/signup">
-                <Button
-                  variant={p.highlight ? "primary" : "secondary"}
-                  className="mt-8 w-full"
-                >
-                  {p.cta}
-                </Button>
-              </Link>
-            </Card>
-          ))}
         </div>
       </section>
 

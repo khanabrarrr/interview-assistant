@@ -12,7 +12,10 @@ import {
   Map,
   StickyNote,
   User,
+  ShieldCheck,
 } from "lucide-react";
+import SearchBar from "@/components/SearchBar";
+import NotificationBell from "@/components/NotificationBell";
 
 const items = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -23,6 +26,7 @@ const items = [
   { href: "/roadmap", label: "Roadmap", icon: Map },
   { href: "/notes", label: "Notes", icon: StickyNote },
   { href: "/profile", label: "Profile", icon: User },
+  { href: "/admin", label: "Admin", icon: ShieldCheck },
 ];
 
 export default function Sidebar() {
@@ -30,9 +34,17 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden w-64 shrink-0 border-r border-white/5 bg-bg-secondary p-4 md:block">
-      <Link href="/" className="mb-8 block px-2 text-xl font-extrabold">
-        Placement<span className="text-accent">AI</span>
-      </Link>
+      <div className="mb-4 flex items-center justify-between px-2">
+        <Link href="/" className="text-xl font-extrabold">
+          Ace<span className="text-accent">Interview</span>
+        </Link>
+        <NotificationBell />
+      </div>
+
+      <div className="mb-6 px-1">
+        <SearchBar />
+      </div>
+
       <nav className="space-y-1">
         {items.map((item) => {
           const active = pathname === item.href;

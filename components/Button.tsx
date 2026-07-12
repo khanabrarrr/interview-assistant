@@ -16,7 +16,7 @@ export default function Button({
     <button
       className={clsx(
         "focus-ring rounded-full px-6 py-3 text-sm font-semibold transition disabled:opacity-50",
-        variant === "primary" && "bg-accent text-black hover:bg-accent-dark",
+        variant === "primary" && "bg-accent text-white hover:bg-accent-dark",
         variant === "secondary" &&
           "border border-white/10 bg-transparent text-white hover:bg-white/5",
         variant === "ghost" && "bg-transparent text-text-secondary hover:text-white",

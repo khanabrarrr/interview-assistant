@@ -16,7 +16,7 @@ export default function PrivacyPage() {
             to improve AI models, and how users can request deletion.
           </p>
           <p>
-            Include sections on: data we collect, how we use it, third-party processors (OpenAI, Supabase),
+            Include sections on: data we collect, how we use it, third-party processors (Google Gemini, Supabase),
             cookies, user rights (access, correction, deletion), data retention, children&apos;s privacy,
             and how to contact us about privacy concerns.
           </p>

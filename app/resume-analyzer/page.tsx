@@ -23,19 +23,30 @@ interface Analysis {
 export default function ResumeAnalyzerPage() {
   const [resumeText, setResumeText] = useState("");
   const [fileName, setFileName] = useState("");
+  const [extracting, setExtracting] = useState(false);
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
 
-  // NOTE: for production, parse PDF/DOCX server-side (see /api/resume/analyze
-  // and the pdf-parse / mammoth packages already included in package.json).
-  // This client-side handler reads plain text files directly for a quick demo;
-  // wire it to a proper upload+parse endpoint for real PDF/DOCX support.
+  // Uploads the file to /api/resume/extract, which parses PDF/DOCX/TXT
+  // server-side (pdf-parse / mammoth) and returns plain text.
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setFileName(file.name);
-    const text = await file.text();
-    setResumeText(text);
+    setExtracting(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/resume/extract", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Couldn't read that file.");
+      setResumeText(data.text);
+      toast.success("Resume text extracted!");
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setExtracting(false);
+    }
   }
 
   async function handleAnalyze() {
@@ -77,7 +88,9 @@ export default function ResumeAnalyzerPage() {
           >
             <UploadCloud className="mb-3 text-accent" size={28} />
             <p className="text-sm font-medium">
-              {fileName || "Click to upload a .txt/.pdf/.docx resume"}
+              {extracting
+                ? "Extracting text…"
+                : fileName || "Click to upload a .txt/.pdf/.docx resume"}
             </p>
             <p className="mt-1 text-xs text-text-secondary">or paste text below</p>
             <input

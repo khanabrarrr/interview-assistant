@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Placement AI — Ace Your Next Interview",
+  title: "AceInterview — Your AI Interview Coach",
   description:
     "AI-powered resume analysis, job matching, and mock interviews for students and job seekers preparing for placements.",
   keywords: [
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     "job description matcher",
   ],
   openGraph: {
-    title: "Placement AI — Ace Your Next Interview",
+    title: "AceInterview — Your AI Interview Coach",
     description:
       "Practice smarter with AI mock interviews, resume scoring, and personalized placement roadmaps.",
     type: "website",

@@ -76,6 +76,17 @@ create table if not exists roadmaps (
   created_at timestamptz default now()
 );
 
+-- Notifications
+create table if not exists notifications (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
+  title text not null,
+  message text,
+  type text default 'general', -- 'interview_reminder' | 'daily_practice' | 'resume_update' | 'weekly_report' | 'general'
+  read boolean default false,
+  created_at timestamptz default now()
+);
+
 -- Progress tracking
 create table if not exists progress (
   id uuid primary key default gen_random_uuid(),
@@ -98,9 +109,15 @@ alter table saved_questions enable row level security;
 alter table notes enable row level security;
 alter table roadmaps enable row level security;
 alter table progress enable row level security;
+alter table notifications enable row level security;
 
 create policy "Users manage own profile" on profiles
   for all using (auth.uid() = id) with check (auth.uid() = id);
+
+create policy "Admins can view all profiles" on profiles
+  for select using (
+    exists (select 1 from profiles p where p.id = auth.uid() and p.is_admin = true)
+  );
 
 create policy "Users manage own resume analyses" on resume_analyses
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
@@ -121,6 +138,9 @@ create policy "Users manage own roadmaps" on roadmaps
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 create policy "Users manage own progress" on progress
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "Users manage own notifications" on notifications
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Auto-create a profile row whenever a new auth user signs up

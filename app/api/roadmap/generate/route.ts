@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai, MODEL } from "@/lib/openai";
+import { generateJSON } from "@/lib/gemini";
 
 // Expects JSON body: { degree, skills, careerGoal, weakAreas }
 export async function POST(req: NextRequest) {
@@ -10,25 +10,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "careerGoal is required." }, { status: 400 });
     }
 
-    const completion = await openai.chat.completions.create({
-      model: MODEL,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a placement preparation coach. Build a personalized roadmap. Respond ONLY with JSON matching: " +
-            '{"dailyTasks": string[], "weeklyGoals": string[], "resources": string[], "revisionPlan": string[], "practiceChecklist": string[]}',
-        },
-        {
-          role: "user",
-          content: `Degree: ${degree || "not specified"}\nSkills: ${skills || "not specified"}\nCareer goal: ${careerGoal}\nWeak areas: ${weakAreas || "not specified"}`,
-        },
-      ],
-    });
+    const systemPrompt =
+      "You are a placement preparation coach. Build a personalized roadmap. Respond ONLY with JSON matching: " +
+      '{"dailyTasks": string[], "weeklyGoals": string[], "resources": string[], "revisionPlan": string[], "practiceChecklist": string[]}';
 
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    const roadmap = JSON.parse(raw);
+    const userContent = `Degree: ${degree || "not specified"}\nSkills: ${skills || "not specified"}\nCareer goal: ${careerGoal}\nWeak areas: ${weakAreas || "not specified"}`;
+
+    const roadmap = await generateJSON(systemPrompt, userContent);
 
     return NextResponse.json({ roadmap });
   } catch (err) {

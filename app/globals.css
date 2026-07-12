@@ -12,28 +12,28 @@ html {
 }
 
 body {
-  background: #0a0a0a;
+  background: #0A0A0F;
   color: #ffffff;
   font-family: "Inter", sans-serif;
 }
 
 ::selection {
-  background: #1db954;
-  color: #0a0a0a;
+  background: #6C63FF;
+  color: #0A0A0F;
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #0A0A0F;
 }
 ::-webkit-scrollbar-thumb {
   background: #2a2a2a;
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #1db954;
+  background: #6C63FF;
 }
 
 .glass {
@@ -44,7 +44,7 @@ body {
 }
 
 .focus-ring:focus-visible {
-  outline: 2px solid #1db954;
+  outline: 2px solid #6C63FF;
   outline-offset: 2px;
 }
 

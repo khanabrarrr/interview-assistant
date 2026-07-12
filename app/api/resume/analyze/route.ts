@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai, MODEL } from "@/lib/openai";
+import { generateJSON } from "@/lib/gemini";
 
 // Expects JSON body: { resumeText: string }
 // Returns a structured resume analysis (score, ATS score, strengths, etc.)
@@ -14,22 +14,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const completion = await openai.chat.completions.create({
-      model: MODEL,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert technical recruiter and resume coach. Analyze the resume text and respond ONLY with a JSON object matching this schema: " +
-            '{"resumeScore": number (0-100), "atsScore": number (0-100), "name": string, "skills": string[], "education": string[], "projects": string[], "certifications": string[], "experience": string[], "strengths": string[], "weaknesses": string[], "grammarSuggestions": string[], "missingKeywords": string[], "suggestedImprovements": string[], "summary": string}',
-        },
-        { role: "user", content: resumeText.slice(0, 12000) },
-      ],
-    });
+    const systemPrompt =
+      "You are an expert technical recruiter and resume coach. Analyze the resume text and respond ONLY with a JSON object matching this schema: " +
+      '{"resumeScore": number (0-100), "atsScore": number (0-100), "name": string, "skills": string[], "education": string[], "projects": string[], "certifications": string[], "experience": string[], "strengths": string[], "weaknesses": string[], "grammarSuggestions": string[], "missingKeywords": string[], "suggestedImprovements": string[], "summary": string}';
 
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    const analysis = JSON.parse(raw);
+    const analysis = await generateJSON(systemPrompt, resumeText.slice(0, 12000));
 
     return NextResponse.json({ analysis });
   } catch (err) {

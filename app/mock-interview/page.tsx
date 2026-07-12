@@ -127,7 +127,7 @@ export default function MockInterviewPage() {
                       key={t}
                       onClick={() => setInterviewType(t)}
                       className={`focus-ring rounded-full px-4 py-1.5 text-xs font-medium transition ${
-                        interviewType === t ? "bg-accent text-black" : "bg-white/5 text-text-secondary"
+                        interviewType === t ? "bg-accent text-white" : "bg-white/5 text-text-secondary"
                       }`}
                     >
                       {t}
@@ -143,7 +143,7 @@ export default function MockInterviewPage() {
                       key={d}
                       onClick={() => setDifficulty(d)}
                       className={`focus-ring rounded-full px-4 py-1.5 text-xs font-medium transition ${
-                        difficulty === d ? "bg-accent text-black" : "bg-white/5 text-text-secondary"
+                        difficulty === d ? "bg-accent text-white" : "bg-white/5 text-text-secondary"
                       }`}
                     >
                       {d}

@@ -5,12 +5,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#0A0A0A",
-        "bg-secondary": "#151515",
-        card: "#1E1E1E",
-        accent: "#1DB954",
-        "accent-dark": "#169c46",
-        "text-secondary": "#A3A3A3",
+        bg: "#0A0A0F",
+        "bg-secondary": "#13131A",
+        card: "#1C1C26",
+        accent: "#6C63FF",
+        "accent-dark": "#564FDB",
+        "accent-warm": "#FF9F5A",
+        "text-secondary": "#A0A0B0",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

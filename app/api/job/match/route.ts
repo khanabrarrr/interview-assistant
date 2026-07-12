@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai, MODEL } from "@/lib/openai";
+import { generateJSON } from "@/lib/gemini";
 
 // Expects JSON body: { resumeText: string, jobDescription: string }
 export async function POST(req: NextRequest) {
@@ -13,25 +13,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const completion = await openai.chat.completions.create({
-      model: MODEL,
-      response_format: { type: "json_object" },
-      messages: [
-        {
-          role: "system",
-          content:
-            "You compare a resume against a job description. Respond ONLY with JSON matching: " +
-            '{"matchPercentage": number (0-100), "matchingSkills": string[], "missingSkills": string[], "atsCompatibility": number (0-100), "suggestedResumeChanges": string[], "importantKeywords": string[], "skillsToLearn": string[]}',
-        },
-        {
-          role: "user",
-          content: `RESUME:\n${resumeText.slice(0, 8000)}\n\nJOB DESCRIPTION:\n${jobDescription.slice(0, 4000)}`,
-        },
-      ],
-    });
+    const systemPrompt =
+      "You compare a resume against a job description. Respond ONLY with JSON matching: " +
+      '{"matchPercentage": number (0-100), "matchingSkills": string[], "missingSkills": string[], "atsCompatibility": number (0-100), "suggestedResumeChanges": string[], "importantKeywords": string[], "skillsToLearn": string[]}';
 
-    const raw = completion.choices[0]?.message?.content ?? "{}";
-    const match = JSON.parse(raw);
+    const userContent = `RESUME:\n${resumeText.slice(0, 8000)}\n\nJOB DESCRIPTION:\n${jobDescription.slice(0, 4000)}`;
+
+    const match = await generateJSON(systemPrompt, userContent);
 
     return NextResponse.json({ match });
   } catch (err) {

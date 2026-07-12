@@ -22,7 +22,7 @@ export default function RoadmapPage() {
   const [loading, setLoading] = useState(false);
   const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
 
-  // This calls the same OpenAI-backed pattern as the other tools. Add a
+  // This calls the same Gemini-backed pattern as the other tools. Add a
   // dedicated /api/roadmap/generate route (mirroring /api/job/match) that
   // prompts the model with these fields and returns the Roadmap shape below.
   async function handleGenerate() {

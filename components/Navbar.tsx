@@ -7,7 +7,6 @@ import { Menu, X } from "lucide-react";
 const links = [
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it Works" },
-  { href: "#pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },
 ];
 
@@ -18,7 +17,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/5 bg-bg/80 backdrop-blur-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="text-xl font-extrabold tracking-tight">
-          Placement<span className="text-accent">AI</span>
+          Ace<span className="text-accent">Interview</span>
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
@@ -42,7 +41,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/signup"
-            className="focus-ring rounded-full bg-accent px-5 py-2 text-sm font-semibold text-black transition hover:bg-accent-dark"
+            className="focus-ring rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white transition hover:bg-accent-dark"
           >
             Get Started
           </Link>
@@ -69,7 +68,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/signup"
-            className="rounded-full bg-accent px-5 py-2 text-center text-sm font-semibold text-black"
+            className="rounded-full bg-accent px-5 py-2 text-center text-sm font-semibold text-white"
           >
             Get Started
           </Link>

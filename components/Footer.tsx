@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <p className="text-lg font-extrabold">
-              Placement<span className="text-accent">AI</span>
+              Ace<span className="text-accent">Interview</span>
             </p>
             <p className="mt-3 text-sm text-text-secondary">
               AI-powered interview prep for students and job seekers.
@@ -18,7 +18,6 @@ export default function Footer() {
             <p className="mb-3 text-sm font-semibold text-white">Product</p>
             <ul className="space-y-2 text-sm text-text-secondary">
               <li><a href="#features" className="hover:text-white">Features</a></li>
-              <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
               <li><Link href="/dashboard" className="hover:text-white">Dashboard</Link></li>
             </ul>
           </div>
@@ -42,7 +41,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-white/5 pt-6 text-center text-xs text-text-secondary">
-          © {new Date().getFullYear()} PlacementAI. All rights reserved.
+          © {new Date().getFullYear()} AceInterview. All rights reserved.
         </div>
       </div>
     </footer>
