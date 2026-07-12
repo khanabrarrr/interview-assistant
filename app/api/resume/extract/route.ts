@@ -60,6 +60,17 @@ async function extractPdfText(buffer: Buffer): Promise<string> {
   // serverless function needs.
   const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
 
+  // pdfjs-dist normally auto-loads a separate "worker" file at runtime, but
+  // Vercel's serverless bundler doesn't reliably detect and include that
+  // file automatically. Pointing workerSrc at it explicitly (combined with
+  // outputFileTracingIncludes in next.config.js) makes sure it's actually
+  // present in the deployed bundle.
+  const path = await import("path");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = path.join(
+    process.cwd(),
+    "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs"
+  );
+
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buffer),
     useWorkerFetch: false,
