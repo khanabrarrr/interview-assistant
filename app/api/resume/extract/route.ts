@@ -20,13 +20,7 @@ export async function POST(req: NextRequest) {
     let text = "";
 
     if (name.endsWith(".pdf")) {
-      // Import from the internal lib path, not the package root. pdf-parse's
-      // main index.js has debug/test code that misfires when bundled by
-      // Next.js serverless functions (it tries to read a nonexistent test
-      // file). Importing lib/pdf-parse.js directly skips that broken path.
-      const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
-      const parsed = await pdfParse(buffer);
-      text = parsed.text;
+      text = await extractPdfText(buffer);
     } else if (name.endsWith(".docx")) {
       const result = await mammoth.extractRawText({ buffer });
       text = result.value;
@@ -56,4 +50,32 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// Uses pdfjs-dist (Mozilla's actively maintained PDF engine, the same one
+// Firefox uses) rather than the unmaintained pdf-parse package, which fails
+// on many modern PDFs due to an outdated bundled parser.
+async function extractPdfText(buffer: Buffer): Promise<string> {
+  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+
+  const loadingTask = pdfjsLib.getDocument({
+    data: new Uint8Array(buffer),
+    useWorkerFetch: false,
+    isEvalSupported: false,
+    disableFontFace: true,
+  });
+
+  const doc = await loadingTask.promise;
+  let text = "";
+
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items
+      .map((item: any) => ("str" in item ? item.str : ""))
+      .join(" ");
+    text += pageText + "\n";
+  }
+
+  return text;
 }

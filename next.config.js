@@ -7,7 +7,7 @@ const nextConfig = {
   // pdf-parse and mammoth use Node-specific file/module APIs that shouldn't
   // be bundled by webpack for serverless functions — keep them external.
   experimental: {
-    serverComponentsExternalPackages: ["pdf-parse", "mammoth"],
+    serverComponentsExternalPackages: ["pdfjs-dist", "mammoth"],
   },
 };
 
