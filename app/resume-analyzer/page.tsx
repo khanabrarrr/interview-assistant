@@ -6,6 +6,7 @@ import Sidebar from "@/components/Sidebar";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import { UploadCloud } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface Analysis {
   resumeScore: number;
@@ -65,6 +66,19 @@ export default function ResumeAnalyzerPage() {
       if (!res.ok) throw new Error(data.error || "Analysis failed");
       setAnalysis(data.analysis);
       toast.success("Resume analyzed!");
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("resume_analyses").insert({
+          user_id: user.id,
+          resume_text: resumeText.slice(0, 12000),
+          resume_score: data.analysis.resumeScore,
+          ats_score: data.analysis.atsScore,
+          analysis: data.analysis,
+        });
+      }
     } catch (err: any) {
       toast.error(err.message);
     } finally {

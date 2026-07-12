@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Sidebar from "@/components/Sidebar";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 interface MatchResult {
   matchPercentage: number;
@@ -37,6 +38,18 @@ export default function JobMatcherPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Matching failed");
       setResult(data.match);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("job_matches").insert({
+          user_id: user.id,
+          job_description: jobDescription.slice(0, 4000),
+          match_percentage: data.match.matchPercentage,
+          result: data.match,
+        });
+      }
     } catch (err: any) {
       toast.error(err.message);
     } finally {

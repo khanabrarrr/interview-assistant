@@ -18,11 +18,9 @@ export async function POST(req: NextRequest) {
     let text = "";
 
     if (name.endsWith(".pdf")) {
-      // Import from the internal lib path, not the package root. pdf-parse's
-      // main index.js has debug/test code that misfires when bundled by
-      // Next.js serverless functions (it tries to read a nonexistent test
-      // file). Importing lib/pdf-parse.js directly skips that broken path.
-      const pdfParse = (await import("pdf-parse/lib/pdf-parse.js")).default;
+      // Lazy-imported because pdf-parse has side effects at import time
+      // that only make sense when actually parsing a PDF.
+      const pdfParse = (await import("pdf-parse")).default;
       const parsed = await pdfParse(buffer);
       text = parsed.text;
     } else if (name.endsWith(".docx")) {

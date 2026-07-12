@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Sidebar from "@/components/Sidebar";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 interface QA {
   question: string;
@@ -72,6 +73,38 @@ export default function MockInterviewPage() {
       setLoading(false);
     }
   }
+
+  // Once the interview is marked finished, persist the transcript and an
+  // average score so it shows up in the dashboard and recent activity.
+  useEffect(() => {
+    if (!finished || history.length === 0) return;
+
+    async function saveInterview() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const scored = history.filter((h) => h.feedback);
+      const avgRelevance = scored.length
+        ? Math.round(
+            scored.reduce((sum, h) => sum + (h.feedback?.relevanceScore || 0), 0) / scored.length
+          )
+        : null;
+
+      await supabase.from("mock_interviews").insert({
+        user_id: user.id,
+        role,
+        interview_type: interviewType,
+        difficulty,
+        transcript: history,
+        final_rating: avgRelevance,
+      });
+    }
+
+    saveInterview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished]);
 
   function handleStart() {
     setStarted(true);
