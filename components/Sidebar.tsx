@@ -14,6 +14,7 @@ import {
   StickyNote,
   User,
   ShieldCheck,
+  History,
   Menu,
   X,
 } from "lucide-react";
@@ -28,6 +29,7 @@ const baseItems = [
   { href: "/mock-interview", label: "Mock Interview", icon: MessagesSquare },
   { href: "/answer-improvement", label: "Answer Improver", icon: Sparkles },
   { href: "/roadmap", label: "Roadmap", icon: Map },
+  { href: "/history", label: "History", icon: History },
   { href: "/notes", label: "Notes", icon: StickyNote },
   { href: "/profile", label: "Profile", icon: User },
 ];

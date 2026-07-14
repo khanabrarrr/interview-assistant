@@ -27,11 +27,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const questionsAskedSoFar = (history || []).length;
+
     const systemPrompt = `You are an experienced ${interviewType} interviewer conducting a mock interview for a ${experienceLevel || "candidate"} applying for a ${role} position, at ${difficulty || "Medium"} difficulty.
-Ask exactly ONE question at a time. If the candidate just answered a question (see lastAnswer), first evaluate that answer, then ask the next question.
+${questionsAskedSoFar} question(s) have already been asked in this interview (full list is in the history below, in order). Ask exactly ONE new question at a time, and NEVER repeat or closely rephrase a question that already appears in the history.
+If the candidate just answered a question (see lastAnswer), first evaluate that specific answer against the question it was given in response to, then ask the next new question.
 Respond ONLY with JSON matching:
 {"feedback": {"evaluation": string, "idealAnswer": string, "betterWording": string, "confidenceScore": number (0-100), "relevanceScore": number (0-100)} | null, "nextQuestion": string, "isFinalQuestion": boolean}
-Set "feedback" to null if this is the very first question of the interview (no lastAnswer yet). Keep the interview to a reasonable length; set isFinalQuestion to true once 6-8 questions have been asked.`;
+Set "feedback" to null only if this is the very first question of the interview (no lastAnswer yet). Plan for a total of 6-8 questions in the full interview; set isFinalQuestion to true once that many have been asked and answered — not before question 6.`;
 
     const historyText = (history || [])
       .map((h: { question: string; answer: string }, i: number) =>
@@ -39,7 +42,7 @@ Set "feedback" to null if this is the very first question of the interview (no l
       )
       .join("\n\n");
 
-    const userContent = `Interview history so far:\n${historyText || "(none yet — this is the first question)"}\n\nMost recent candidate answer to evaluate (if any): ${lastAnswer || "(none)"}`;
+    const userContent = `Interview history so far (${questionsAskedSoFar} question(s) already asked):\n${historyText || "(none yet — this is the first question)"}\n\nMost recent candidate answer to evaluate, in response to the LAST question listed above (if any): ${lastAnswer || "(none — this is the first question, so feedback must be null)"}`;
 
     const result = await generateJSON(systemPrompt, userContent);
 

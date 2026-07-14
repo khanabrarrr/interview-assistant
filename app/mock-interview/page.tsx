@@ -35,9 +35,10 @@ export default function MockInterviewPage() {
   const [loading, setLoading] = useState(false);
   const [finished, setFinished] = useState(false);
 
-  async function callChat(lastAnswer?: string) {
+  async function callChat(lastAnswer?: string, historyOverride?: QA[]) {
     setLoading(true);
     try {
+      const historyForRequest = historyOverride ?? history;
       const res = await fetch("/api/interview/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,7 +47,7 @@ export default function MockInterviewPage() {
           experienceLevel,
           difficulty,
           interviewType,
-          history: history.map(({ question, answer }) => ({ question, answer })),
+          history: historyForRequest.map(({ question, answer }) => ({ question, answer })),
           lastAnswer,
         }),
       });
@@ -56,7 +57,7 @@ export default function MockInterviewPage() {
       if (data.feedback && lastAnswer) {
         setHistory((prev) => {
           const updated = [...prev];
-          updated[updated.length - 1].feedback = data.feedback;
+          if (updated.length > 0) updated[updated.length - 1].feedback = data.feedback;
           return updated;
         });
       }
@@ -118,10 +119,12 @@ export default function MockInterviewPage() {
       toast.error("Type an answer first.");
       return;
     }
-    setHistory((prev) => [...prev, { question: currentQuestion, answer }]);
+    const newEntry: QA = { question: currentQuestion, answer };
+    const updatedHistory = [...history, newEntry];
+    setHistory(updatedHistory);
     const submitted = answer;
     setAnswer("");
-    callChat(submitted);
+    callChat(submitted, updatedHistory);
   }
 
   return (

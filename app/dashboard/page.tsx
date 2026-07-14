@@ -13,6 +13,7 @@ interface Activity {
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
+  const [firstName, setFirstName] = useState("");
   const [resumeScore, setResumeScore] = useState<number | null>(null);
   const [avgRelevance, setAvgRelevance] = useState<number | null>(null);
   const [practiceDays, setPracticeDays] = useState(0);
@@ -31,6 +32,15 @@ export default function DashboardPage() {
     if (!user) {
       setLoading(false);
       return;
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .single();
+    if (profile?.full_name) {
+      setFirstName(profile.full_name.trim().split(" ")[0]);
     }
 
     const [resumeRes, interviewsRes, matchesRes] = await Promise.all([
@@ -105,7 +115,9 @@ export default function DashboardPage() {
     <div className="flex min-h-screen bg-bg">
       <Sidebar />
       <main className="flex-1 p-6 md:p-10">
-        <h1 className="text-2xl font-extrabold">Welcome back 👋</h1>
+        <h1 className="text-2xl font-extrabold">
+          Welcome back{firstName ? `, ${firstName}` : ""} 👋
+        </h1>
         <p className="mt-1 text-sm text-text-secondary">
           Here&apos;s where your placement prep stands today.
         </p>
