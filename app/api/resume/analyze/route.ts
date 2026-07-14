@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
 
     const systemPrompt =
       "You are an expert technical recruiter and resume coach. Analyze the resume text and respond ONLY with a JSON object matching this schema: " +
-      '{"resumeScore": number (0-100), "atsScore": number (0-100), "name": string, "skills": string[], "education": string[], "projects": string[], "certifications": string[], "experience": string[], "strengths": string[], "weaknesses": string[], "grammarSuggestions": string[], "missingKeywords": string[], "suggestedImprovements": string[], "summary": string}';
+      '{"resumeScore": number (0-100), "atsScore": number (0-100), "name": string, "skills": string[], "education": string[], "projects": string[], "certifications": string[], "experience": string[], "strengths": string[], "weaknesses": string[], "grammarSuggestions": string[], "missingKeywords": string[], "suggestedImprovements": string[], "summary": string}. ' +
+      "Keep each array to at most 6 concise items (a few words to one short sentence each), and keep the summary to 2-3 sentences. Prioritize the most important points over completeness — a shorter, valid response is much more useful than a long one.";
 
     const analysis = await generateJSON(systemPrompt, resumeText.slice(0, 12000));
 

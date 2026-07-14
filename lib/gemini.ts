@@ -27,8 +27,9 @@ function stripCodeFences(raw: string): string {
 /**
  * Calls Gemini with a system + user prompt and asks it to return raw JSON,
  * matching the {system, user} -> JSON pattern used across this app's API routes.
- * Retries on rate-limit (429) and transient server (503) errors, since the
- * free tier occasionally throttles or briefly overloads under load.
+ * Retries on rate-limit (429), transient server (503), and malformed/truncated
+ * JSON responses — the free tier occasionally throttles, briefly overloads,
+ * or (rarely) cuts a response short, and a retry usually gets a clean one.
  */
 export async function generateJSON(systemPrompt: string, userContent: string) {
   const model = genAI.getGenerativeModel({
@@ -36,7 +37,10 @@ export async function generateJSON(systemPrompt: string, userContent: string) {
     systemInstruction: systemPrompt,
     generationConfig: {
       responseMimeType: "application/json",
-      maxOutputTokens: 4096,
+      // Raised from 4096 — long resume analyses (many array fields) were
+      // occasionally getting cut off mid-string at the old limit, which
+      // produces invalid JSON that fails to parse.
+      maxOutputTokens: 8192,
     },
   });
 
@@ -46,12 +50,24 @@ export async function generateJSON(systemPrompt: string, userContent: string) {
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       const result = await model.generateContent(userContent);
+
+      const finishReason = result.response.candidates?.[0]?.finishReason;
+      if (finishReason === "MAX_TOKENS") {
+        // The response was cut off before it finished — parsing it would
+        // just fail anyway, so treat this as a retryable failure directly
+        // rather than waiting for JSON.parse to throw.
+        throw Object.assign(new Error("Response truncated at max output tokens."), {
+          retryable: true,
+        });
+      }
+
       const raw = result.response.text();
       return JSON.parse(stripCodeFences(raw));
     } catch (err: any) {
       lastError = err;
       const status = err?.status;
-      const isRetryable = status === 429 || status === 503;
+      const isJsonError = err instanceof SyntaxError;
+      const isRetryable = status === 429 || status === 503 || isJsonError || err?.retryable;
 
       console.error(
         `Gemini generateJSON failed (attempt ${attempt}/${maxAttempts}, status ${status}):`,
