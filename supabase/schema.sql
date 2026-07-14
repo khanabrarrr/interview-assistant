@@ -114,10 +114,20 @@ alter table notifications enable row level security;
 create policy "Users manage own profile" on profiles
   for all using (auth.uid() = id) with check (auth.uid() = id);
 
+-- A security-definer function bypasses RLS for its own internal lookup,
+-- which avoids the infinite recursion you'd get from a policy on `profiles`
+-- directly querying `profiles` again to check is_admin.
+create or replace function public.is_admin_user()
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select coalesce((select is_admin from profiles where id = auth.uid()), false);
+$$;
+
 create policy "Admins can view all profiles" on profiles
-  for select using (
-    exists (select 1 from profiles p where p.id = auth.uid() and p.is_admin = true)
-  );
+  for select using (public.is_admin_user());
 
 create policy "Users manage own resume analyses" on resume_analyses
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

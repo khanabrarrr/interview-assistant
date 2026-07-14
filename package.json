@@ -14,7 +14,7 @@
     "react-dom": "18.3.1",
     "framer-motion": "11.3.19",
     "@supabase/supabase-js": "2.45.0",
-    "@supabase/auth-helpers-nextjs": "0.10.0",
+    "@supabase/ssr": "0.5.1",
     "@google/generative-ai": "0.21.0",
     "lucide-react": "0.417.0",
     "react-hot-toast": "2.4.1",

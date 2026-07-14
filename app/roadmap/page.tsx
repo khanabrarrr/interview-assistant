@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Sidebar from "@/components/Sidebar";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
+import { supabase } from "@/lib/supabase";
 
 interface Roadmap {
   dailyTasks: string[];
@@ -40,6 +41,16 @@ export default function RoadmapPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Roadmap generation failed");
       setRoadmap(data.roadmap);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from("roadmaps").insert({
+          user_id: user.id,
+          roadmap: data.roadmap,
+        });
+      }
     } catch (err: any) {
       toast.error(err.message);
     } finally {
